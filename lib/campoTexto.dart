@@ -5,9 +5,39 @@ class CampoTexto extends StatefulWidget {
   _CampoTextoState createState() => _CampoTextoState();
 }
 
+//Receive what is in the text field.
 class _CampoTextoState extends State<CampoTexto> {
   TextEditingController _controllerAlcool = TextEditingController();
   TextEditingController _controllerGasolina = TextEditingController();
+  String _textoResultado = "";
+
+//Calculation Function.
+  void _calcular() {
+    double? precoAlcool = double.tryParse(_controllerAlcool.text);
+    double? precoGasolina = double.tryParse(_controllerGasolina.text);
+
+    if (precoAlcool == null || precoGasolina == null) {
+      setState(() {
+        _textoResultado =
+            "Numero inválido. Digite números maiores que 0 e utilizando (.)";
+      });
+    } else {
+      /**
+       * Se o preço do álcool dividio pelo preço da gasolina for 
+       * >= 0.7 é melhor abastecer com gasolina.
+       * Se não, é melhor utilizar álcool.
+       */
+      if ((precoAlcool / precoGasolina) >= 0.7) {
+        setState(() {
+          _textoResultado = "Melhor abastecer com gasolina";
+        });
+      } else {
+        setState(() {
+          _textoResultado = "Melhor abastecer com alcool";
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +51,7 @@ class _CampoTextoState extends State<CampoTexto> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(32),
           child: Column(
-            //botão ocupa todo o espaço
+            //button takes up all the space
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
@@ -70,13 +100,13 @@ class _CampoTextoState extends State<CampoTexto> {
                       fontSize: 20,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: _calcular,
                 ),
               ),
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 child: Text(
-                  "Resultado",
+                  _textoResultado,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
